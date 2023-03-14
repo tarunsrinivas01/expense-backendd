@@ -35,6 +35,10 @@ exports.signup = async (req, res, next) => {
 exports.login=async(req,res,next)=>{
   try {
     const {email,password}=req.body
+    if(isstringvalidate(email)|| isstringvalidate(password))
+    {
+        return res.status(401).json({err:'something is missing'})
+    }
     const users=await user.findAll({where:{email:email}})
     // console.log(users)
     if(users.length>0)
