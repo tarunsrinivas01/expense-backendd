@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const user = require("../models/user");
-const e = require("express");
+const bcrypt=require('bcrypt')
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,11 +22,11 @@ exports.signup = async (req, res, next) => {
     {
         return res.status(401).json({err:'something is missing'})
     }
-
-    await user.create({ name, email, password });
-    res
-      .status(201)
-      .json({ message: "successfully new user created", success: "true" });
+    const saltrounds=10;
+    bcrypt.hash(password,saltrounds,async(err,hash)=>{
+      await user.create({name,email,password:hash})
+     res.status(201).json({message:'successfully new user created',success:'true'})
+    })
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
