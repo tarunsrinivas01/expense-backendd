@@ -32,3 +32,25 @@ exports.signup = async (req, res, next) => {
     res.status(500).json(error);
   }
 };
+exports.login=async(req,res,next)=>{
+  try {
+    const {email,password}=req.body
+    const users=await user.findAll({where:{email:email}})
+    // console.log(users)
+    if(users.length>0)
+    {
+      if(users[0].password==password)
+      {
+        return res.status(201).json({message:'user logged in succesfully',success:'true'})
+      }
+      else{
+        return res.status(401).json({message:'User not authorized',success:'false'})
+      }
+    }
+    else{
+      return res.status(500).json({message:'user not found',message:'false'})
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
