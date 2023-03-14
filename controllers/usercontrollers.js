@@ -38,19 +38,28 @@ exports.login=async(req,res,next)=>{
     const users=await user.findAll({where:{email:email}})
     // console.log(users)
     if(users.length>0)
-    {
-      if(users[0].password==password)
-      {
-        return res.status(201).json({message:'user logged in succesfully',success:'true'})
-      }
-      else{
-        return res.status(401).json({message:'User not authorized',success:'false'})
-      }
-    }
+        {
+            bcrypt.compare(password,users[0].password,(err,result)=>{
+            if(err)
+            {
+                throw new Error('something went wrong')
+            }
+            if(result===true)
+            {
+                return res.status(201).json({message:'user logged in'})
+            }
+            else{
+               return res.status(401).json({message:'password incorrect'})
+                 
+            }
+            })
+            
+        }
     else{
       return res.status(500).json({message:'user not found',message:'false'})
     }
   } catch (error) {
     console.log(error)
+    return res.status(500).json({message:err})
   }
 }
