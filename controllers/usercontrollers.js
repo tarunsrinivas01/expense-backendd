@@ -13,9 +13,9 @@ function isstringvalidate(string)
     if(string==undefined || string.length===0)return true;
     return false;
 }
-function generatetoken(id)
+function generatetoken(id,ispremiumuser)
 {
-  return jwt.sign({userid:id},'Tarun@123')
+  return jwt.sign({userid:id,ispremiumuser:ispremiumuser},'Tarun@123')
 }
 exports.signup = async (req, res, next) => {
   try {
@@ -56,7 +56,7 @@ exports.login=async(req,res,next)=>{
             if(result===true)
             {
                 console.log(generatetoken(users[0].id))
-                return res.status(201).json({message:'user logged in','token':generatetoken(users[0].id)})
+                return res.status(201).json({message:'user logged in','token':generatetoken(users[0].id,users[0].ispremiumuser)})
             }
             else{
                return res.status(401).json({message:'password incorrect'})

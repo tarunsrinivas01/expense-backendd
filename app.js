@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 // using routes
 app.use("/user", userroutes);
 app.use('/expenses',expenseroutes)
-app.use('/premium',purchaseroutes)
+app.use('/purchase',purchaseroutes)
 
 // relations
 user.hasMany(expense)
