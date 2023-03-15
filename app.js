@@ -4,7 +4,8 @@ const sequelize = require("./database/db");
 //requiring routes
 const userroutes = require("./routes/userroutes");
 const expenseroutes=require('./routes/expensesroutes')
-const purchaseroutes=require('./routes/premiumroutes')
+const purchaseroutes=require('./routes/purchaseroutes')
+const premiumroutes=require('./routes/premium-features')
 
 // requiring models
 const user=require('./models/user')
@@ -25,6 +26,7 @@ app.use(bodyParser.json());
 app.use("/user", userroutes);
 app.use('/expenses',expenseroutes)
 app.use('/purchase',purchaseroutes)
+app.use('/premium',premiumroutes)
 
 // relations
 user.hasMany(expense)

@@ -1,5 +1,6 @@
 const { where } = require('sequelize');
 const exp=require('../models/expense')
+const user=require('../models/user')
 
 exports.addexpenses=async(req,res,next)=>
 {
@@ -13,6 +14,8 @@ exports.addexpenses=async(req,res,next)=>
         return res.status(401).json({message:'parameters are missing'})
     }
     const data=await exp.create({amount:amount,description:description,category:category,userId:req.user.id})
+    const totalexpenses=Number(req.user.total_expenses)+Number(amount)
+    await user.update({total_expenses:totalexpenses},{where:{id:req.user.id}})
     res.status(201).json({newexpenses:data})
     }
     catch(err)
