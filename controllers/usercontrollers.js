@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const user = require("../models/user");
 const bcrypt=require('bcrypt')
+const jwt=require('jsonwebtoken')
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -11,6 +12,10 @@ function isstringvalidate(string)
 {
     if(string==undefined || string.length===0)return true;
     return false;
+}
+function generatetoken(id)
+{
+  return jwt.sign({userid:id},'Tarun@123')
 }
 exports.signup = async (req, res, next) => {
   try {
@@ -50,7 +55,8 @@ exports.login=async(req,res,next)=>{
             }
             if(result===true)
             {
-                return res.status(201).json({message:'user logged in'})
+                console.log(generatetoken(users[0].id))
+                return res.status(201).json({message:'user logged in','token':generatetoken(users[0].id)})
             }
             else{
                return res.status(401).json({message:'password incorrect'})

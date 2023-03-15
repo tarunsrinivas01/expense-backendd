@@ -3,12 +3,13 @@ const express=require('express')
 const Router=express.Router();
 
 const expensecontrollers=require('../controllers/expense-controllers')
+const auth=require('../middleware/authentication')
 
 
 
-Router.post('/add-expenses',expensecontrollers.addexpenses)
-Router.get('/getall',expensecontrollers.getexpenses)
-Router.delete('/delete/:id',expensecontrollers.deleteexpenses)
-Router.put('/add-expenses/:id',expensecontrollers.editexpenses)
+Router.post('/add-expenses',auth.authentication,expensecontrollers.addexpenses)
+Router.get('/getall',auth.authentication,expensecontrollers.getexpenses)
+Router.delete('/delete/:id',auth.authentication,expensecontrollers.deleteexpenses)
+Router.put('/add-expenses/:id',auth.authentication,expensecontrollers.editexpenses)
 
 module.exports=Router
