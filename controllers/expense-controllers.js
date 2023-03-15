@@ -1,25 +1,28 @@
-const { where } = require('sequelize');
+const sequelize=require('../database/db')
 const exp=require('../models/expense')
 const user=require('../models/user')
 
 exports.addexpenses=async(req,res,next)=>
-{
+{    const t=await sequelize.transaction()
     try{
     const amount=req.body.amount;
     const description=req.body.description;
     const category=req.body.choosecategory;
+
     console.log('id>>>>>>>>',req.user.id)
     if(amount===undefined|| amount.length===0||description===undefined||description.length===0||category===undefined||category.length===0)
     {
         return res.status(401).json({message:'parameters are missing'})
     }
-    const data=await exp.create({amount:amount,description:description,category:category,userId:req.user.id})
+    const data=await exp.create({amount:amount,description:description,category:category,userId:req.user.id},{transaction:t})
     const totalexpenses=Number(req.user.total_expenses)+Number(amount)
-    await user.update({total_expenses:totalexpenses},{where:{id:req.user.id}})
+    await user.update({total_expenses:totalexpenses},{where:{id:req.user.id},transaction:t})
+    await t.commit()
     res.status(201).json({newexpenses:data})
     }
     catch(err)
     {
+        await t.rollback()
         console.log(err)
         res.status(500).json({message:err,success:'false'})
     } 
@@ -38,12 +41,17 @@ exports.getexpenses=async(req,res,next)=>{
 exports.deleteexpenses=async(req,res,next)=>{
     try{
         const expid=req.params.id
+        const delexpense=exp.findByPk(expid)
+        const delamount=delexpense.amount;
         const response=await exp.destroy({where:{id:expid,userId:req.user.id}})
         if(response===0)
-        {
+        {   
+            
             res.status(401).json({message:'no expense found',success:'false'})
         }
         else{
+            const totalexpenses=Number(req.user.total_expenses)-Number(delamount)
+            req.user.update({total_expenses:totalexpenses},{where:{id:req.user.id}})
             res.status(200).json({message:'expense deleted',success:'true'})
         }
        
