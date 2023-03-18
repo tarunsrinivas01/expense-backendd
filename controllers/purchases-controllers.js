@@ -9,8 +9,8 @@ function generatetoken(id,ispremiumuser)
 exports.purchasepremium=async(req,res,next)=>{
     try {
         const rzp=new razorpay({
-            key_id:'rzp_test_Wx8WvHEcZfxSdk',
-            key_secret:'Eo1tseTEAubP3ZPGK9mlLghI'
+            key_id:process.env.key_id,
+            key_secret:process.env.key_secret
         })
         const amount=2500;
         rzp.orders.create({amount,currency:'INR'},async(err,order)=>{

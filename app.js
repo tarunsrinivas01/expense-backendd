@@ -1,6 +1,11 @@
+require('dotenv').config()
 const express = require("express");
 const app = express();
 const sequelize = require("./database/db");
+const helmet=require('helmet')
+const morgan=require('morgan')
+const fs=require('fs')
+const path=require('path')
 //requiring routes
 const userroutes = require("./routes/userroutes");
 const expenseroutes=require('./routes/expensesroutes')
@@ -17,8 +22,13 @@ const files=require('./models/files')
 // bodyparser and cors
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const accesslogstream=fs.createWriteStream(path.join(__dirname,'access.log',),
+{flags:'a'})
+
 
 // middlewares
+app.use(helmet())
+app.use(morgan("combined",{stream:accesslogstream}))
 app.use(cors());
 console.log("entered");
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -46,5 +56,5 @@ files.belongsTo(user)
 
 sequelize
   .sync()
-  .then(app.listen(3000))
+  .then(app.listen(process.env.PORT||3000))
   .catch((err) => console.log(err));

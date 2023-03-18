@@ -1,0 +1,6 @@
+::1 - - [18/Mar/2023:09:56:40 +0000] "OPTIONS /expenses/downloadedfiles HTTP/1.1" 204 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
+::1 - - [18/Mar/2023:09:56:40 +0000] "OPTIONS /expenses/getall?page=1&limit=10 HTTP/1.1" 204 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
+::1 - - [18/Mar/2023:09:57:58 +0000] "OPTIONS /expenses/downloadedfiles HTTP/1.1" 204 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
+::1 - - [18/Mar/2023:09:57:58 +0000] "OPTIONS /expenses/getall?page=1&limit=10 HTTP/1.1" 204 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
+::1 - - [18/Mar/2023:09:57:58 +0000] "GET /expenses/downloadedfiles HTTP/1.1" 201 1003 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
+::1 - - [18/Mar/2023:09:57:58 +0000] "GET /expenses/getall?page=1&limit=10 HTTP/1.1" 304 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
