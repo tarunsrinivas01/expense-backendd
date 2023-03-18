@@ -1,6 +1,9 @@
 const sequelize=require('../database/db')
 const exp=require('../models/expense')
 const user=require('../models/user')
+const Expense=require('../models/expense')
+const Downloadfile=require('../models/files')
+const AWS=require('aws-sdk')
 
 exports.addexpenses=async(req,res,next)=>
 {    const t=await sequelize.transaction()
@@ -85,3 +88,66 @@ exports.editexpenses = async (req, res, next) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+function uploadtoS3(data,filename)
+{
+  const BUCKET_NAME='expensetracker1'
+  const IAM_USER_KEY='AKIAYQF6SJQJ26LSJ6UW'
+  const IAM_USER_SECRET='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'
+
+  let s3Bucket=new AWS.S3({
+    accessKeyId:IAM_USER_KEY,
+    secretAccessKey:IAM_USER_SECRET,
+    
+  })
+
+    var params={
+      Bucket:BUCKET_NAME,
+      Key:filename,
+      Body:data,
+      ACL:'public-read'
+    }
+    return new Promise((resolve,reject)=>{
+        s3Bucket.upload(params,(err,s3response)=>{
+            if(err)
+            {
+              console.log(err)
+              reject(err)
+            }
+            else{
+              console.log('success',s3response)
+              resolve(s3response.Location)
+            }
+          })
+    })
+    
+}
+
+exports.downloadexpenses=async(req,res,next)=>{
+    try {
+        const id=req.user.id
+  const expense=await Expense.findAll({where:{userId:id}})
+  const stringifiedexpenses=JSON.stringify(expense)
+  const filename=`expenses${id}/${new Date()}.txt`
+  const fileUrl=await uploadtoS3(stringifiedexpenses,filename)
+  await Downloadfile.create({url:fileUrl,userId:id});
+  res.status(201).json({fileUrl,success:'true'})
+    } catch (error) {
+        console.log(error)
+        res.status(401).json({fileUrl:'',success:'false',err:error})
+    }
+    
+}
+exports.files=async(req,res,next)=>{
+    try {
+        const id=req.user.id
+
+        const files=await Downloadfile.findAll({where:{userId:id}})
+        // if(files.length>0)
+        // {
+            console.log(files.url)
+            res.status(201).json({files:files,message:'success'})
+        // }
+    } catch (error) {
+        res.status(401).json({err:'no files found'})
+    }
+}

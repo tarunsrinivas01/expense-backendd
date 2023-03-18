@@ -13,6 +13,7 @@ const user=require('./models/user')
 const expense=require('./models/expense')
 const order=require('./models/order')
 const forgot=require('./models/forgot-pass')
+const files=require('./models/files')
 // bodyparser and cors
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -39,6 +40,9 @@ order.belongsTo(user)
 
 user.hasMany(forgot)
 forgot.belongsTo(user)
+
+user.hasMany(files)
+files.belongsTo(user)
 
 sequelize
   .sync()

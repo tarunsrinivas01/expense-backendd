@@ -17,6 +17,8 @@ function generatetoken(id,ispremiumuser)
 {
   return jwt.sign({userid:id,ispremiumuser:ispremiumuser},'Tarun@123')
 }
+
+
 exports.signup = async (req, res, next) => {
   try {
     const name = req.body.name;
