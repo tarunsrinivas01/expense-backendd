@@ -31,14 +31,29 @@ exports.addexpenses=async(req,res,next)=>
     } 
 }
 exports.getexpenses=async(req,res,next)=>{
+    
     try{
-        const data=await exp.findAll({where:{userId:req.user.id}})
-        res.status(200).json({allexpenses:data})
+        const page=+req.query.page||1;
+        const limit=5;
+        const totalexpenses=await exp.findAll({where:{userId:req.user.id}})
+        const data=await exp.findAll({where:{userId:req.user.id},
+        offset:(page-1)*limit,
+        limit:limit})
+        console.log('>>>>>>>',data)
+        res.status(200).json({
+            success:true,
+            allexpenses:data,
+            currentpage: page,
+            hasnextpage: (limit * page < totalexpenses.length),
+            nextpage: page + 1,
+            haspreviouspage: page > 1,
+            previouspage: page - 1,
+            lastpage: Math.ceil(totalexpenses / limit),})
     }
     catch(err)
     {
         console.log(err)
-        res.status(500).json({message:err,success:'false'})
+        res.status(500).json({err:err,success:'false'})
     }
 }
 exports.deleteexpenses=async(req,res,next)=>{
