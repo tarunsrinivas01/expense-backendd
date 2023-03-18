@@ -34,7 +34,7 @@ exports.getexpenses=async(req,res,next)=>{
     
     try{
         const page=+req.query.page||1;
-        const limit=5;
+        const limit=+req.query.limit||5;
         const totalexpenses=await exp.findAll({where:{userId:req.user.id}})
         const data=await exp.findAll({where:{userId:req.user.id},
         offset:(page-1)*limit,
